@@ -1,16 +1,9 @@
 package com.example.tmdbapi
 
+import com.google.gson.annotations.SerializedName
+
 data class GetTVShowsResponse(
-    val results: List<TVShow>
+    @SerializedName("page") val page: Int,
+    @SerializedName("results") val tvshows: List<TVShows>,
+    @SerializedName("total_pages") val pages: Int
 )
-
-data class TVShow(
-    val id: Int,
-    val title: String,
-    val overview: String,
-    val rating: Float,
-    val backdropPath: String,
-    val posterPath: String,
-    // ... other attributes
-)
-

@@ -132,7 +132,7 @@ class MainActivity : AppCompatActivity() {
         upcomingMoviesAdapter.appendMovies(movies)
     }
 
-    private fun onPopularTVShowsFetched(tvShows: List<TVShow>) {
+    private fun onPopularTVShowsFetched(tvShows: List<TVShows>) {
         popularTVShowsAdapter.appendTVShows(tvShows)
     }
 

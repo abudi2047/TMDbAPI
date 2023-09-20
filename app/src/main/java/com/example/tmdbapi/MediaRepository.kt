@@ -51,7 +51,7 @@ object MediaRepository {
 
     fun getPopularTVShows(
         page: Int = 1,
-        onSuccess: (tvShows: List<TVShow>) -> Unit,
+        onSuccess: (tvShows: List<TVShows>) -> Unit,
         onError: () -> Unit
     ) {
         api.getPopularTVShows(API_KEY, page)
@@ -91,7 +91,7 @@ object MediaRepository {
     }
 
     private fun createTVShowsCallback(
-        onSuccess: (tvShows: List<TVShow>) -> Unit,
+        onSuccess: (tvShows: List<TVShows>) -> Unit,
         onError: () -> Unit
     ): Callback<GetTVShowsResponse> {
         return object : Callback<GetTVShowsResponse> {
@@ -102,7 +102,7 @@ object MediaRepository {
                 if (response.isSuccessful) {
                     val responseBody = response.body()
                     if (responseBody != null) {
-                        onSuccess.invoke(responseBody.results)
+                        onSuccess.invoke(responseBody.tvshows)
                     } else {
                         onError.invoke()
                         Log.e("MediaRepository", "TVShows response body is null")
