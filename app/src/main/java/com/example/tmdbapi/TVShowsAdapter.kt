@@ -1,41 +1,49 @@
 package com.example.tmdbapi
 
-import androidx.recyclerview.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import android.widget.ImageView
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 
-class TVShowsAdapter : RecyclerView.Adapter<TVShowsAdapter.TVShowViewHolder>() {
-
-    private val tvShows = mutableListOf<TVShows>()
+class TVShowsAdapter(
+    private var tvShows: MutableList<TVShows>,
+    private val onTVShowClick: (TVShows) -> Unit
+) : RecyclerView.Adapter<TVShowsAdapter.TVShowViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TVShowViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.tvshow_item, parent, false)
-        return TVShowViewHolder(view)
-    }
-
-    override fun onBindViewHolder(holder: TVShowViewHolder, position: Int) {
-        val tvShow = tvShows[position]
-    //      holder.tvTitle.text = tvShow.title
-   //      holder.tvOverview.text = tvShow.overview
-  //      holder.tvRating.text = "Rating: ${tvShow.rating}"
-        // Load TV show poster image using an image loading library like Picasso or Glide
-        // Example: Picasso.get().load(tvShow.posterPath).into(holder.ivPoster)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_movie, parent, false)
+        return TVShowViewHolder(view, onTVShowClick)
     }
 
     override fun getItemCount(): Int = tvShows.size
 
-    fun appendTVShows(newTVShows: List<TVShows>) {
-        tvShows.addAll(newTVShows)
-        notifyDataSetChanged()
+    override fun onBindViewHolder(holder: TVShowViewHolder, position: Int) {
+        holder.bind(tvShows[position])
     }
 
-    inner class TVShowViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-      //  val tvTitle: TextView = itemView.findViewById(R.id.tvTitle)
-      //  val tvOverview: TextView = itemView.findViewById(R.id.tvOverview) // Define tvOverview
-      //  val tvRating: TextView = itemView.findViewById(R.id.tvRating) // Define tvRating
-        // Initialize other view components here
+    fun appendTVShows(tvShows: List<TVShows>) {
+        val positionStart = this.tvShows.size
+        this.tvShows.addAll(tvShows)
+        notifyItemRangeInserted(positionStart, tvShows.size)
+    }
+
+    class TVShowViewHolder(itemView: View, private val onTVShowClick: (TVShows) -> Unit) : RecyclerView.ViewHolder(itemView) {
+        private val poster: ImageView = itemView.findViewById(R.id.item_movie_poster)
+
+        fun bind(tvShow: TVShows) {
+            val imageUrl = "https://image.tmdb.org/t/p/w342${tvShow.posterPath}"
+            Log.d("TVShowsAdapter", "Loading image from: $imageUrl")
+
+            Glide.with(itemView)
+                .load(imageUrl)
+                .transform(CenterCrop())
+                .into(poster)
+
+            itemView.setOnClickListener { onTVShowClick(tvShow) }
+        }
     }
 }
-

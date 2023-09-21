@@ -31,40 +31,44 @@ class MainActivity : AppCompatActivity() {
         setupRecyclerView(
             R.id.popular_movies,
             ::fetchPopularMovies,
-            { showMovieDetails(it) }
-        ) { popularMoviesAdapter = it as MoviesAdapter }
+            { showMovieDetails(it as Movie) },
+            { popularMoviesAdapter = it as MoviesAdapter }
+        )
 
         setupRecyclerView(
             R.id.top_rated_movies,
             ::fetchTopRatedMovies,
-            { showMovieDetails(it) }
-        ) { topRatedMoviesAdapter = it as MoviesAdapter }
+            { showMovieDetails(it as Movie) },
+            { topRatedMoviesAdapter = it as MoviesAdapter }
+        )
 
         setupRecyclerView(
             R.id.upcoming_movies,
             ::fetchUpcomingMovies,
-            { showMovieDetails(it) }
-        ) { upcomingMoviesAdapter = it as MoviesAdapter }
+            { showMovieDetails(it as Movie) },
+            { upcomingMoviesAdapter = it as MoviesAdapter }
+        )
 
         setupRecyclerView(
             R.id.popular_tvshows,
             ::fetchPopularTVShows,
-            { showTVShowDetails(it) } // Call the showTVShowDetails function for TV shows
-        ) { popularTVShowsAdapter = it as TVShowsAdapter }
+            { showTVShowDetails(it as TVShows) },
+            { popularTVShowsAdapter = it as TVShowsAdapter }
+        )
     }
 
     private fun setupRecyclerView(
         recyclerViewId: Int,
         fetchFunction: (Int) -> Unit,
-        clickAction: (Movie) -> Unit,
+        clickAction: (Any) -> Unit,
         adapterSetter: (RecyclerView.Adapter<*>) -> Unit
     ) {
         val recyclerView = findViewById<RecyclerView>(recyclerViewId)
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
         val adapter = when (recyclerViewId) {
-            R.id.popular_tvshows -> TVShowsAdapter() // Use TVShowsAdapter for TV shows
-            else -> MoviesAdapter(mutableListOf(), clickAction)
+            R.id.popular_tvshows -> TVShowsAdapter(mutableListOf(), clickAction as (TVShows) -> Unit)
+            else -> MoviesAdapter(mutableListOf()) { movie -> clickAction(movie) }
         }
 
         adapterSetter(adapter)
@@ -145,7 +149,7 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun showTVShowDetails(tvShow: Movie) {
+    private fun showTVShowDetails(tvShow: TVShows) {
         val intent = Intent(this, TVShowsDetailsActivity::class.java)
         // Pass TV show data to the details activity if needed
         // For example: intent.putExtra("tvShow", tvShow)
