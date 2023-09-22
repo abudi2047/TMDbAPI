@@ -58,7 +58,14 @@ object MediaRepository {
             .enqueue(createTVShowsCallback(onSuccess, onError))
     }
 
-    // Assume similar methods for top-rated and upcoming TV shows if they exist in your API.
+    fun getOnAirTVShows(
+        page: Int = 1,
+        onSuccess: (tvShows: List<TVShows>) -> Unit,
+        onError: () -> Unit
+    ) {
+        api.getOnAirTVShows(API_KEY, page)
+            .enqueue(createTVShowsCallback(onSuccess, onError))
+    }
 
     private fun createMoviesCallback(
         onSuccess: (movies: List<Movie>) -> Unit,

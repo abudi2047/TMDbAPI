@@ -27,15 +27,15 @@ class TVShowsDetailsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_movie_details) // Ensure this is the correct layout file for TV show details
+        setContentView(R.layout.activity_tvshows_details) // Corrected layout file name
 
         // Initialize UI elements
-        backdrop = findViewById(R.id.movie_backdrop) // Update the ID to match the TV show details layout
-        poster = findViewById(R.id.movie_poster) // Update the ID to match the TV show details layout
-        title = findViewById(R.id.movie_title) // Update the ID to match the TV show details layout
-        rating = findViewById(R.id.movie_rating) // Update the ID to match the TV show details layout
-        releaseDate = findViewById(R.id.movie_release_date) // Update the ID to match the TV show details layout
-        overview = findViewById(R.id.movie_overview) // Update the ID to match the TV show details layout
+        backdrop = findViewById(R.id.tvshows_backdrop) // Corrected ID
+        poster = findViewById(R.id.tvshows_poster) // Corrected ID
+        title = findViewById(R.id.tvshows_title) // Corrected ID
+        rating = findViewById(R.id.tvshows_rating) // Corrected ID
+        releaseDate = findViewById(R.id.tvshows_release_date) // Corrected ID
+        overview = findViewById(R.id.tvshows_overview) // Corrected ID
 
         val extras = intent.extras
         if (extras != null) {
@@ -48,7 +48,7 @@ class TVShowsDetailsActivity : AppCompatActivity() {
     private fun populateDetails(extras: Bundle) {
         extras.getString(TV_SHOWS_BACKDROP)?.let { backdropPath ->
             Glide.with(this)
-                .load("https://image.tmdb.org/t/p/w780$backdropPath") // Changed to w780 for better resolution on most devices
+                .load("https://image.tmdb.org/t/p/w780$backdropPath")
                 .transform(CenterCrop())
                 .into(backdrop)
         }
