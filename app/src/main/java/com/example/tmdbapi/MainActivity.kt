@@ -6,11 +6,6 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.tmdbapi.MediaRepository
-import com.example.tmdbapi.Movie
-import com.example.tmdbapi.MoviesAdapter
-import com.example.tmdbapi.TVShows
-import com.example.tmdbapi.TVShowsAdapter
 
 class MainActivity : AppCompatActivity() {
 
@@ -35,55 +30,55 @@ class MainActivity : AppCompatActivity() {
         setScrollListeners()
     }
 
+
     private fun initUIComponents() {
         setupRecyclerView(
             R.id.popular_movies,
             ::fetchPopularMovies,
-            { showItemDetails(it) },
+            { showMovieDetails(it as Movie) },
             { popularMoviesAdapter = it as MoviesAdapter }
         )
 
         setupRecyclerView(
             R.id.top_rated_movies,
             ::fetchTopRatedMovies,
-            { showItemDetails(it) },
+            { showMovieDetails(it as Movie) },
             { topRatedMoviesAdapter = it as MoviesAdapter }
         )
 
         setupRecyclerView(
             R.id.upcoming_movies,
             ::fetchUpcomingMovies,
-            { showItemDetails(it) },
+            { showMovieDetails(it as Movie) },
             { upcomingMoviesAdapter = it as MoviesAdapter }
         )
 
         setupRecyclerView(
             R.id.popular_tvshows,
             ::fetchPopularTVShows,
-            { showItemDetails(it) },
+            { showTVShowDetails(it as TVShows) },
             { popularTVShowsAdapter = it as TVShowsAdapter }
         )
 
         setupRecyclerView(
-            R.id.on_the_air_tvshows, // Add RecyclerView for "On The Air" TV Shows
-            ::fetchOnTheAirTVShows, // Add fetch function for "On The Air" TV Shows
-            { showItemDetails(it) },
+            R.id.on_the_air_tvshows,
+            ::fetchOnTheAirTVShows,
+            { showTVShowDetails(it as TVShows) },
             { onTheAirTVShowsAdapter = it as TVShowsAdapter }
         )
     }
-
     private fun setupRecyclerView(
         recyclerViewId: Int,
         fetchFunction: (Int) -> Unit,
-        clickAction: (Any) -> Unit,
+        itemClickAction: (Any) -> Unit,
         adapterSetter: (RecyclerView.Adapter<*>) -> Unit
     ) {
         val recyclerView = findViewById<RecyclerView>(recyclerViewId)
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
         val adapter = when (recyclerViewId) {
-            R.id.popular_tvshows, R.id.on_the_air_tvshows -> TVShowsAdapter(mutableListOf(), clickAction as (TVShows) -> Unit)
-            else -> MoviesAdapter(mutableListOf()) { movie -> clickAction(movie) }
+            R.id.popular_tvshows, R.id.on_the_air_tvshows -> TVShowsAdapter(mutableListOf(), itemClickAction as (Any) -> Unit)
+            else -> MoviesAdapter(mutableListOf(), itemClickAction)
         }
 
         adapterSetter(adapter)
@@ -96,7 +91,7 @@ class MainActivity : AppCompatActivity() {
         setupScrollListener(R.id.top_rated_movies, ::fetchTopRatedMovies)
         setupScrollListener(R.id.upcoming_movies, ::fetchUpcomingMovies)
         setupScrollListener(R.id.popular_tvshows, ::fetchPopularTVShows)
-        setupScrollListener(R.id.on_the_air_tvshows, ::fetchOnTheAirTVShows) // Add scroll listener for "On The Air" TV Shows
+        setupScrollListener(R.id.on_the_air_tvshows, ::fetchOnTheAirTVShows)
     }
 
     private fun setupScrollListener(recyclerViewId: Int, fetchFunction: (Int) -> Unit) {
@@ -107,7 +102,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.top_rated_movies -> ++topRatedMoviesPage
                 R.id.upcoming_movies -> ++upcomingMoviesPage
                 R.id.popular_tvshows -> ++popularTVShowsPage
-                R.id.on_the_air_tvshows -> ++onTheAirTVShowsPage // Add page increment for "On The Air" TV Shows
+                R.id.on_the_air_tvshows -> ++onTheAirTVShowsPage
                 else -> 1
             }
             fetchFunction(nextPage)
@@ -162,7 +157,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onOnTheAirTVShowsFetched(tvShows: List<TVShows>) {
-        onTheAirTVShowsAdapter.appendTVShows(tvShows) // Add function to handle fetched "On The Air" TV Shows
+        onTheAirTVShowsAdapter.appendTVShows(tvShows)
     }
 
     private fun onError() {
@@ -171,15 +166,27 @@ class MainActivity : AppCompatActivity() {
 
     private fun showItemDetails(item: Any) {
         if (item is Movie) {
-            val intent = Intent(this, MovieDetailsActivity::class.java)
-            // Pass movie data to the details activity if needed
-            // For example: intent.putExtra("movie", item)
-            startActivity(intent)
+            showMovieDetails(item)
         } else if (item is TVShows) {
-            val intent = Intent(this, TVShowsDetailsActivity::class.java)
-            // Pass TV show data to the details activity if needed
-            // For example: intent.putExtra("tvShow", item)
-            startActivity(intent)
+            showTVShowDetails(item)
         }
+    }
+
+    private fun showMovieDetails(movie: Movie) {
+        val intent = Intent(this, MovieDetailsActivity::class.java)
+        intent.putExtra(MOVIE_BACKDROP, movie.backdropPath)
+        intent.putExtra(MOVIE_POSTER, movie.posterPath)
+        intent.putExtra(MOVIE_TITLE, movie.title)
+        intent.putExtra(MOVIE_RATING, movie.rating)
+        intent.putExtra(MOVIE_RELEASE_DATE, movie.releaseDate)
+        intent.putExtra(MOVIE_OVERVIEW, movie.overview)
+        startActivity(intent)
+    }
+
+    private fun showTVShowDetails(tvShow: TVShows) {
+        val intent = Intent(this, TVShowsDetailsActivity::class.java)
+        // Pass TV show data to the details activity if needed
+        // For example: intent.putExtra("tvShow", tvShow)
+        startActivity(intent)
     }
 }
