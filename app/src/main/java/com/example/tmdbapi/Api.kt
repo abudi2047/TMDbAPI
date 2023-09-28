@@ -41,4 +41,8 @@ interface Api {
         @Query("api_key") apiKey: String = "5575de1681ca7d8c20c4d05f6ffe9ffc",
         @Query("page") page: Int
     ): Call<GetTVShowsResponse>
+
+    @GET("trending/person/week")
+    fun getTrendingPeople(): Call<TrendingPersonResponse>
+
 }

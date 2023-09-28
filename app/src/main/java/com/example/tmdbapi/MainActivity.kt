@@ -14,6 +14,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var upcomingMoviesAdapter: MoviesAdapter
     private lateinit var popularTVShowsAdapter: TVShowsAdapter
     private lateinit var onTheAirTVShowsAdapter: TVShowsAdapter
+    private lateinit var topRatedTVShowsAdapter: TVShowsAdapter
 
     // Add the following page variables
     private var popularMoviesPage = 1
@@ -21,6 +22,7 @@ class MainActivity : AppCompatActivity() {
     private var upcomingMoviesPage = 1
     private var popularTVShowsPage = 1
     private var onTheAirTVShowsPage = 1
+    private var topRatedTVShowsPage = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,6 +68,14 @@ class MainActivity : AppCompatActivity() {
             { showTVShowDetails(it as TVShows) },
             { onTheAirTVShowsAdapter = it as TVShowsAdapter }
         )
+
+        setupRecyclerView(
+            R.id.top_rated_tvshows,
+            ::fetchTopRatedTVShows,
+            { showTVShowDetails(it as TVShows) },
+            { topRatedTVShowsAdapter = it as TVShowsAdapter }
+        )
+
     }
     private fun setupRecyclerView(
         recyclerViewId: Int,
@@ -77,7 +87,7 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
         val adapter = when (recyclerViewId) {
-            R.id.popular_tvshows, R.id.on_the_air_tvshows -> TVShowsAdapter(mutableListOf(), itemClickAction as (Any) -> Unit)
+            R.id.popular_tvshows, R.id.on_the_air_tvshows, R.id.top_rated_tvshows -> TVShowsAdapter(mutableListOf(), itemClickAction as (Any) -> Unit)
             else -> MoviesAdapter(mutableListOf(), itemClickAction)
         }
 
@@ -92,6 +102,7 @@ class MainActivity : AppCompatActivity() {
         setupScrollListener(R.id.upcoming_movies, ::fetchUpcomingMovies)
         setupScrollListener(R.id.popular_tvshows, ::fetchPopularTVShows)
         setupScrollListener(R.id.on_the_air_tvshows, ::fetchOnTheAirTVShows)
+        setupScrollListener(R.id.top_rated_tvshows, ::fetchTopRatedTVShows)
     }
 
     private fun setupScrollListener(recyclerViewId: Int, fetchFunction: (Int) -> Unit) {
@@ -140,6 +151,18 @@ class MainActivity : AppCompatActivity() {
         MediaRepository.getOnAirTVShows(page, ::onOnTheAirTVShowsFetched, ::onError)
     }
 
+    private fun fetchTopRatedTVShows(page: Int) {
+        MediaRepository.getTopRatedTVShows(
+            onSuccess = { tvShows ->
+                topRatedTVShowsAdapter.appendTVShows(tvShows)
+            },
+            onError = {
+                onError()
+            }
+        )
+    }
+
+
     private fun onPopularMoviesFetched(movies: List<Movie>) {
         popularMoviesAdapter.appendMovies(movies)
     }
@@ -185,8 +208,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun showTVShowDetails(tvShow: TVShows) {
         val intent = Intent(this, TVShowsDetailsActivity::class.java)
-        // Pass TV show data to the details activity if needed
-        // For example: intent.putExtra("tvShow", tvShow)
+        intent.putExtra(TV_SHOWS_BACKDROP, tvShow.backdropPath)
+        intent.putExtra(TV_SHOWS_POSTER, tvShow.posterPath)
+        intent.putExtra(TV_SHOWS_TITLE, tvShow.title)
+        intent.putExtra(TV_SHOWS_RATING, tvShow.rating)
+        intent.putExtra(TV_SHOWS_RELEASE_DATE, tvShow.firstAirDate)
+        intent.putExtra(TV_SHOWS_OVERVIEW, tvShow.overview)
         startActivity(intent)
     }
+
+
 }

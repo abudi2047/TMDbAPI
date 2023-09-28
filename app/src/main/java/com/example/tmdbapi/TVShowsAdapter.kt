@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -16,6 +15,7 @@ class TVShowsAdapter(
 ) : RecyclerView.Adapter<TVShowsAdapter.TVShowViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TVShowViewHolder {
+        // It would be more organized to use a separate layout, but for now, using item_movie is okay.
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_movie, parent, false)
         return TVShowViewHolder(view, onTVShowClick)
     }

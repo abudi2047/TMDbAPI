@@ -8,7 +8,6 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 
-// Updated constant names to avoid conflicts
 const val TV_SHOWS_BACKDROP = "extra_tvshow_backdrop"
 const val TV_SHOWS_POSTER = "extra_tvshow_poster"
 const val TV_SHOWS_TITLE = "extra_tvshow_title"
@@ -27,15 +26,14 @@ class TVShowsDetailsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_tvshows_details) // Corrected layout file name
+        setContentView(R.layout.activity_tvshows_details)
 
-        // Initialize UI elements
-        backdrop = findViewById(R.id.tvshows_backdrop) // Corrected ID
-        poster = findViewById(R.id.tvshows_poster) // Corrected ID
-        title = findViewById(R.id.tvshows_title) // Corrected ID
-        rating = findViewById(R.id.tvshows_rating) // Corrected ID
-        releaseDate = findViewById(R.id.tvshows_release_date) // Corrected ID
-        overview = findViewById(R.id.tvshows_overview) // Corrected ID
+        backdrop = findViewById(R.id.tvshows_backdrop)
+        poster = findViewById(R.id.tvshows_poster)
+        title = findViewById(R.id.tvshows_title)
+        rating = findViewById(R.id.tvshows_rating)
+        releaseDate = findViewById(R.id.tvshows_release_date)
+        overview = findViewById(R.id.tvshows_overview)
 
         val extras = intent.extras
         if (extras != null) {

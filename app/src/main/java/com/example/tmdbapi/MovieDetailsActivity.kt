@@ -2,6 +2,7 @@ package com.example.tmdbapi
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
@@ -28,6 +29,7 @@ class MovieDetailsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_movie_details)
 
+
         backdrop = findViewById(R.id.movie_backdrop)
         poster = findViewById(R.id.movie_poster)
         title = findViewById(R.id.movie_title)
@@ -41,12 +43,13 @@ class MovieDetailsActivity : AppCompatActivity() {
         } else {
             finish()
         }
+
     }
 
     private fun populateDetails(extras: Bundle) {
         extras.getString(MOVIE_BACKDROP)?.let { backdropPath ->
             Glide.with(this)
-                .load("https://image.tmdb.org/t/p/w780$backdropPath") // Changed to w780 for better resolution on most devices
+                .load("https://image.tmdb.org/t/p/w780$backdropPath")
                 .transform(CenterCrop())
                 .into(backdrop)
         }
@@ -57,6 +60,10 @@ class MovieDetailsActivity : AppCompatActivity() {
                 .transform(CenterCrop())
                 .into(poster)
         }
+
+        val movieTitle = extras.getString(MOVIE_TITLE, "")
+        Log.d("MovieDetailsActivity", "Movie Title: $movieTitle")
+        title.text = movieTitle
 
         title.text = extras.getString(MOVIE_TITLE, "")
         rating.rating = extras.getFloat(MOVIE_RATING, 0f) / 2
