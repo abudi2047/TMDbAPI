@@ -8,13 +8,6 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 
-const val TV_SHOWS_BACKDROP = "extra_tvshow_backdrop"
-const val TV_SHOWS_POSTER = "extra_tvshow_poster"
-const val TV_SHOWS_TITLE = "extra_tvshow_title"
-const val TV_SHOWS_RATING = "extra_tvshow_rating"
-const val TV_SHOWS_RELEASE_DATE = "extra_tvshow_release_date"
-const val TV_SHOWS_OVERVIEW = "extra_tvshow_overview"
-
 class TVShowsDetailsActivity : AppCompatActivity() {
 
     private lateinit var backdrop: ImageView
@@ -23,6 +16,16 @@ class TVShowsDetailsActivity : AppCompatActivity() {
     private lateinit var rating: RatingBar
     private lateinit var releaseDate: TextView
     private lateinit var overview: TextView
+
+    companion object {
+        const val TV_SHOWS_BACKDROP = "extra_tvshow_backdrop"
+        const val TV_SHOWS_POSTER = "extra_tvshow_poster"
+        const val TV_SHOWS_TITLE = "extra_tvshow_title"
+        const val TV_SHOWS_RATING = "extra_tvshow_rating"
+        const val TV_SHOWS_RELEASE_DATE = "extra_tvshow_release_date"
+        const val TV_SHOWS_OVERVIEW = "extra_tvshow_overview"
+        const val TV_SHOW = "tv_show_key"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

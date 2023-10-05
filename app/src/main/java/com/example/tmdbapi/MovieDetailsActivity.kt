@@ -9,13 +9,6 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 
-const val MOVIE_BACKDROP = "extra_movie_backdrop"
-const val MOVIE_POSTER = "extra_movie_poster"
-const val MOVIE_TITLE = "extra_movie_title"
-const val MOVIE_RATING = "extra_movie_rating"
-const val MOVIE_RELEASE_DATE = "extra_movie_release_date"
-const val MOVIE_OVERVIEW = "extra_movie_overview"
-
 class MovieDetailsActivity : AppCompatActivity() {
 
     private lateinit var backdrop: ImageView
@@ -25,10 +18,19 @@ class MovieDetailsActivity : AppCompatActivity() {
     private lateinit var releaseDate: TextView
     private lateinit var overview: TextView
 
+    companion object {
+        const val MOVIE_BACKDROP = "extra_movie_backdrop"
+        const val MOVIE_POSTER = "extra_movie_poster"
+        const val MOVIE_TITLE = "extra_movie_title"
+        const val MOVIE_RATING = "extra_movie_rating"
+        const val MOVIE_RELEASE_DATE = "extra_movie_release_date"
+        const val MOVIE_OVERVIEW = "extra_movie_overview"
+        const val MOVIE = "movie_key"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_movie_details)
-
 
         backdrop = findViewById(R.id.movie_backdrop)
         poster = findViewById(R.id.movie_poster)
@@ -43,7 +45,6 @@ class MovieDetailsActivity : AppCompatActivity() {
         } else {
             finish()
         }
-
     }
 
     private fun populateDetails(extras: Bundle) {
@@ -65,7 +66,6 @@ class MovieDetailsActivity : AppCompatActivity() {
         Log.d("MovieDetailsActivity", "Movie Title: $movieTitle")
         title.text = movieTitle
 
-        title.text = extras.getString(MOVIE_TITLE, "")
         rating.rating = extras.getFloat(MOVIE_RATING, 0f) / 2
         releaseDate.text = extras.getString(MOVIE_RELEASE_DATE, "")
         overview.text = extras.getString(MOVIE_OVERVIEW, "")

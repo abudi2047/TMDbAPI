@@ -42,7 +42,7 @@ interface Api {
         @Query("page") page: Int
     ): Call<GetTVShowsResponse>
 
-    @GET("trending/person/week")
+    @GET("trending/people/week")
     fun getTrendingPeople(): Call<TrendingPersonResponse>
 
 }

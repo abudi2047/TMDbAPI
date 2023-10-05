@@ -1,11 +1,17 @@
 package com.example.tmdbapi
 
 import android.content.Intent
+import android.graphics.Rect
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.tmdbapi.repository.PeopleRepository
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
 
@@ -15,8 +21,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var popularTVShowsAdapter: TVShowsAdapter
     private lateinit var onTheAirTVShowsAdapter: TVShowsAdapter
     private lateinit var topRatedTVShowsAdapter: TVShowsAdapter
+    private lateinit var trendingPersonAdapter: TrendingPersonAdapter
+    private val trendingPeopleRecyclerView: RecyclerView by lazy { findViewById<RecyclerView>(R.id.trendingPeopleRecyclerView) }
 
-    // Add the following page variables
     private var popularMoviesPage = 1
     private var topRatedMoviesPage = 1
     private var upcomingMoviesPage = 1
@@ -32,8 +39,31 @@ class MainActivity : AppCompatActivity() {
         setScrollListeners()
     }
 
+    class HorizontalSpacingItemDecorator(private val space: Int) : RecyclerView.ItemDecoration() {
+        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+            super.getItemOffsets(outRect, view, parent, state)
+            if (parent.getChildAdapterPosition(view) != parent.adapter?.itemCount?.minus(1)) {
+                outRect.right = space
+            }
+        }
+    }
 
     private fun initUIComponents() {
+        trendingPeopleRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        trendingPersonAdapter = TrendingPersonAdapter(mutableListOf())
+        trendingPeopleRecyclerView.adapter = trendingPersonAdapter
+
+        trendingPeopleRecyclerView.addItemDecoration(HorizontalSpacingItemDecorator(6))
+
+        trendingPersonAdapter.onItemClick = { selectedPerson ->
+            val intent = Intent(this, TrendingPersonDetailActivity::class.java)
+            intent.putExtra("selected_person", selectedPerson)
+            startActivity(intent)
+        }
+
+
+        fetchTrendingPeople()
+
         setupRecyclerView(
             R.id.popular_movies,
             ::fetchPopularMovies,
@@ -75,8 +105,8 @@ class MainActivity : AppCompatActivity() {
             { showTVShowDetails(it as TVShows) },
             { topRatedTVShowsAdapter = it as TVShowsAdapter }
         )
-
     }
+
     private fun setupRecyclerView(
         recyclerViewId: Int,
         fetchFunction: (Int) -> Unit,
@@ -87,8 +117,11 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
         val adapter = when (recyclerViewId) {
-            R.id.popular_tvshows, R.id.on_the_air_tvshows, R.id.top_rated_tvshows -> TVShowsAdapter(mutableListOf(), itemClickAction as (Any) -> Unit)
-            else -> MoviesAdapter(mutableListOf(), itemClickAction)
+            R.id.popular_tvshows, R.id.on_the_air_tvshows, R.id.top_rated_tvshows -> TVShowsAdapter(
+                mutableListOf(),
+                itemClickAction as (TVShows) -> Unit
+            )
+            else -> MoviesAdapter(mutableListOf(), itemClickAction as (Movie) -> Unit)
         }
 
         adapterSetter(adapter)
@@ -114,6 +147,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.upcoming_movies -> ++upcomingMoviesPage
                 R.id.popular_tvshows -> ++popularTVShowsPage
                 R.id.on_the_air_tvshows -> ++onTheAirTVShowsPage
+                R.id.top_rated_tvshows -> ++topRatedTVShowsPage
                 else -> 1
             }
             fetchFunction(nextPage)
@@ -152,16 +186,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun fetchTopRatedTVShows(page: Int) {
-        MediaRepository.getTopRatedTVShows(
-            onSuccess = { tvShows ->
-                topRatedTVShowsAdapter.appendTVShows(tvShows)
-            },
-            onError = {
-                onError()
-            }
-        )
+        MediaRepository.getTopRatedTVShows(page, ::onTopRatedTVShowsFetched, ::onError)
     }
-
 
     private fun onPopularMoviesFetched(movies: List<Movie>) {
         popularMoviesAdapter.appendMovies(movies)
@@ -183,39 +209,36 @@ class MainActivity : AppCompatActivity() {
         onTheAirTVShowsAdapter.appendTVShows(tvShows)
     }
 
-    private fun onError() {
-        Toast.makeText(this, "Failed to get content", Toast.LENGTH_SHORT).show()
+    private fun onTopRatedTVShowsFetched(tvShows: List<TVShows>) {
+        topRatedTVShowsAdapter.appendTVShows(tvShows)
     }
 
-    private fun showItemDetails(item: Any) {
-        if (item is Movie) {
-            showMovieDetails(item)
-        } else if (item is TVShows) {
-            showTVShowDetails(item)
-        }
+    private fun onError() {
+        Toast.makeText(this, "An error occurred", Toast.LENGTH_SHORT).show()
     }
 
     private fun showMovieDetails(movie: Movie) {
         val intent = Intent(this, MovieDetailsActivity::class.java)
-        intent.putExtra(MOVIE_BACKDROP, movie.backdropPath)
-        intent.putExtra(MOVIE_POSTER, movie.posterPath)
-        intent.putExtra(MOVIE_TITLE, movie.title)
-        intent.putExtra(MOVIE_RATING, movie.rating)
-        intent.putExtra(MOVIE_RELEASE_DATE, movie.releaseDate)
-        intent.putExtra(MOVIE_OVERVIEW, movie.overview)
+        intent.putExtra(MOVIE_ID, movie.id)
         startActivity(intent)
     }
 
     private fun showTVShowDetails(tvShow: TVShows) {
         val intent = Intent(this, TVShowsDetailsActivity::class.java)
-        intent.putExtra(TV_SHOWS_BACKDROP, tvShow.backdropPath)
-        intent.putExtra(TV_SHOWS_POSTER, tvShow.posterPath)
-        intent.putExtra(TV_SHOWS_TITLE, tvShow.title)
-        intent.putExtra(TV_SHOWS_RATING, tvShow.rating)
-        intent.putExtra(TV_SHOWS_RELEASE_DATE, tvShow.firstAirDate)
-        intent.putExtra(TV_SHOWS_OVERVIEW, tvShow.overview)
+        intent.putExtra(TV_SHOW_ID, tvShow.id)
         startActivity(intent)
     }
 
+    private fun fetchTrendingPeople() {
+        PeopleRepository.getTrendingPeople(::onTrendingPeopleFetched, ::onError)
+    }
 
+    private fun onTrendingPeopleFetched(people: List<Person>) {
+        trendingPersonAdapter.appendPeople(people)
+    }
+
+    companion object {
+        const val MOVIE_ID = "MOVIE_ID"
+        const val TV_SHOW_ID = "TV_SHOW_ID"
+    }
 }
