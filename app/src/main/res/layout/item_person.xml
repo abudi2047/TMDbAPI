@@ -21,18 +21,4 @@
         android:textSize="18sp"
         android:layout_marginBottom="4dp"/>
 
-    <TextView
-        android:id="@+id/popularityValue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="4dp"
-        android:visibility="gone"/>
-    <TextView
-        android:id="@+id/knownDepartment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:visibility="gone"/>
-
 </LinearLayout>
