@@ -85,15 +85,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvshows_poster_title_barrier" />
 
-<!--        <TextView-->
-<!--            android:id="@+id/titleTextView"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:textSize="24sp"-->
-<!--            android:textStyle="bold"-->
-<!--            android:layout_marginTop="16dp"-->
-<!--            android:layout_marginStart="16dp" />-->
-
         <RatingBar
             android:id="@+id/tvshows_rating"
             style="@style/Widget.AppCompat.RatingBar.Small"

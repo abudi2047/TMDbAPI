@@ -38,6 +38,8 @@ class TVShowsDetailsActivity : AppCompatActivity() {
         releaseDate = findViewById(R.id.tvshows_release_date)
         overview = findViewById(R.id.tvshows_overview)
 
+        val showId = intent.getIntExtra(MainActivity.TV_SHOW_ID, -1)
+
         val extras = intent.extras
         if (extras != null) {
             populateDetails(extras)

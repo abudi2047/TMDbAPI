@@ -35,12 +35,12 @@ class TrendingPersonAdapter(private val peopleList: MutableList<Person>) : Recyc
 
 class TrendingPersonViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val profileImage: ImageView = itemView.findViewById(R.id.profileImage)
-    private val personName: TextView = itemView.findViewById(R.id.personName)
+    //private val personName: TextView = itemView.findViewById(R.id.personName)
     //private val popularityValue: TextView = itemView.findViewById(R.id.popularityValue)
     //private val knownDepartment: TextView = itemView.findViewById(R.id.knownDepartment)
 
     fun bind(person: Person) {
-        personName.text = person.name
+        //personName.text = person.name
         //popularityValue.text = "Popularity: ${person.popularity}"
         //knownDepartment.text = "Known for: ${person.known_for_department}"
 

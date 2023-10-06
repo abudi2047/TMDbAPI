@@ -8,7 +8,21 @@ import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.tmdbapi.MovieDetailsActivity.Companion.MOVIE_BACKDROP
+import com.example.tmdbapi.MovieDetailsActivity.Companion.MOVIE_OVERVIEW
+import com.example.tmdbapi.MovieDetailsActivity.Companion.MOVIE_POSTER
+import com.example.tmdbapi.MovieDetailsActivity.Companion.MOVIE_RATING
+import com.example.tmdbapi.MovieDetailsActivity.Companion.MOVIE_RELEASE_DATE
+import com.example.tmdbapi.MovieDetailsActivity.Companion.MOVIE_TITLE
+import com.example.tmdbapi.TVShowsDetailsActivity.Companion.TV_SHOWS_BACKDROP
+import com.example.tmdbapi.TVShowsDetailsActivity.Companion.TV_SHOWS_OVERVIEW
+import com.example.tmdbapi.TVShowsDetailsActivity.Companion.TV_SHOWS_POSTER
+import com.example.tmdbapi.TVShowsDetailsActivity.Companion.TV_SHOWS_RATING
+import com.example.tmdbapi.TVShowsDetailsActivity.Companion.TV_SHOWS_RELEASE_DATE
+import com.example.tmdbapi.TVShowsDetailsActivity.Companion.TV_SHOWS_TITLE
 import com.example.tmdbapi.repository.PeopleRepository
+import com.google.android.material.color.utilities.MaterialDynamicColors
+import com.google.android.material.color.utilities.MaterialDynamicColors.onError
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -213,22 +227,6 @@ class MainActivity : AppCompatActivity() {
         topRatedTVShowsAdapter.appendTVShows(tvShows)
     }
 
-    private fun onError() {
-        Toast.makeText(this, "An error occurred", Toast.LENGTH_SHORT).show()
-    }
-
-    private fun showMovieDetails(movie: Movie) {
-        val intent = Intent(this, MovieDetailsActivity::class.java)
-        intent.putExtra(MOVIE_ID, movie.id)
-        startActivity(intent)
-    }
-
-    private fun showTVShowDetails(tvShow: TVShows) {
-        val intent = Intent(this, TVShowsDetailsActivity::class.java)
-        intent.putExtra(TV_SHOW_ID, tvShow.id)
-        startActivity(intent)
-    }
-
     private fun fetchTrendingPeople() {
         PeopleRepository.getTrendingPeople(::onTrendingPeopleFetched, ::onError)
     }
@@ -237,8 +235,34 @@ class MainActivity : AppCompatActivity() {
         trendingPersonAdapter.appendPeople(people)
     }
 
+    private fun onError() {
+        Toast.makeText(this, "An error occurred", Toast.LENGTH_SHORT).show()
+    }
+
     companion object {
         const val MOVIE_ID = "MOVIE_ID"
         const val TV_SHOW_ID = "TV_SHOW_ID"
+    }
+
+    private fun showMovieDetails(movie: Movie) {
+        val intent = Intent(this, MovieDetailsActivity::class.java)
+        intent.putExtra(MOVIE_BACKDROP, movie.backdropPath)
+        intent.putExtra(MOVIE_POSTER, movie.posterPath)
+        intent.putExtra(MOVIE_TITLE, movie.title)
+        intent.putExtra(MOVIE_RATING, movie.rating)
+        intent.putExtra(MOVIE_RELEASE_DATE, movie.releaseDate)
+        intent.putExtra(MOVIE_OVERVIEW, movie.overview)
+        startActivity(intent)
+    }
+
+    private fun showTVShowDetails(tvShow: TVShows) {
+        val intent = Intent(this, TVShowsDetailsActivity::class.java)
+        intent.putExtra(TV_SHOWS_BACKDROP, tvShow.backdropPath)
+        intent.putExtra(TV_SHOWS_POSTER, tvShow.posterPath)
+        intent.putExtra(TV_SHOWS_TITLE, tvShow.title)
+        intent.putExtra(TV_SHOWS_RATING, tvShow.rating)
+        intent.putExtra(TV_SHOWS_RELEASE_DATE, tvShow.firstAirDate)
+        intent.putExtra(TV_SHOWS_OVERVIEW, tvShow.overview)
+        startActivity(intent)
     }
 }
