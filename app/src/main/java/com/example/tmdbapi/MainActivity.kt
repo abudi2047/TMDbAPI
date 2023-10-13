@@ -1,5 +1,6 @@
 package com.example.tmdbapi
 
+//import ProviderDetailActivity
 import android.content.Intent
 import android.graphics.Rect
 import androidx.appcompat.app.AppCompatActivity
@@ -22,7 +23,7 @@ import com.example.tmdbapi.TVShowsDetailsActivity.Companion.TV_SHOWS_RELEASE_DAT
 import com.example.tmdbapi.TVShowsDetailsActivity.Companion.TV_SHOWS_TITLE
 import com.example.tmdbapi.repository.PeopleRepository
 import com.google.android.material.color.utilities.MaterialDynamicColors
-import com.google.android.material.color.utilities.MaterialDynamicColors.onError
+//import com.google.android.material.color.utilities.MaterialDynamicColors.onError
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -36,6 +37,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var onTheAirTVShowsAdapter: TVShowsAdapter
     private lateinit var topRatedTVShowsAdapter: TVShowsAdapter
     private lateinit var trendingPersonAdapter: TrendingPersonAdapter
+    private lateinit var movieProvidersAdapter: MovieProvidersAdapter
+
     private val trendingPeopleRecyclerView: RecyclerView by lazy { findViewById<RecyclerView>(R.id.trendingPeopleRecyclerView) }
 
     private var popularMoviesPage = 1
@@ -51,7 +54,26 @@ class MainActivity : AppCompatActivity() {
 
         initUIComponents()
         setScrollListeners()
+
+        // Initialize the recycler view for movie providers.
+        val rvMovieProviders: RecyclerView = findViewById(R.id.rv_movie_providers)
+        rvMovieProviders.layoutManager = LinearLayoutManager(this)
+
+        movieProvidersAdapter = MovieProvidersAdapter(ArrayList()) { movieProvider ->
+            // Handle the provider item click here, e.g.:
+            val intent = Intent(this, ProviderDetailActivity::class.java)
+            intent.putExtra("PROVIDER_DETAILS", movieProvider)
+            startActivity(intent)
+        }
+        rvMovieProviders.adapter = movieProvidersAdapter
+
+        MediaRepository.getMovieProviders({ movieProviders ->
+            movieProvidersAdapter.updateData(movieProviders)
+        }, {
+            onError() // If you want to handle errors using your onError function.
+        })
     }
+
 
     class HorizontalSpacingItemDecorator(private val space: Int) : RecyclerView.ItemDecoration() {
         override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
@@ -74,7 +96,6 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra("selected_person", selectedPerson)
             startActivity(intent)
         }
-
 
         fetchTrendingPeople()
 

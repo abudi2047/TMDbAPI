@@ -175,6 +175,24 @@
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp" />
 
+            <TextView
+                android:id="@+id/tv_movie_providers_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Movie Providers"
+                android:textSize="18sp"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="16dp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_movie_providers"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:clipToPadding="false"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp" />
+
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>

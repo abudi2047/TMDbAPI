@@ -15,6 +15,9 @@
         android:theme="@style/Theme.TMDbAPI"
         tools:targetApi="31">
         <activity
+            android:name=".ProviderDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".TrendingPersonDetailActivity"
             android:exported="false" />
         <activity
