@@ -1,36 +1,53 @@
 package com.example.tmdbapi
 
-import android.os.Bundle
+import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.RecyclerView
+import android.os.Bundle
+import android.widget.ImageView
+import android.widget.TextView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 
 class ProviderDetailActivity : AppCompatActivity() {
 
-    private lateinit var adapter: MovieProvidersAdapter
+    private lateinit var logo: ImageView
+    private lateinit var name: TextView
+    private lateinit var displayPriority: TextView
+
+    companion object {
+        private const val EXTRA_PROVIDER = "extra_provider"
+
+        fun newIntent(context: Context, provider: MovieProvider): Intent {
+            val intent = Intent(context, ProviderDetailActivity::class.java)
+            intent.putExtra(EXTRA_PROVIDER, provider)
+            return intent
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_provider_detail)
 
-        // Initialize the adapter and RecyclerView
-        adapter = MovieProvidersAdapter(emptyList()) { movieProvider ->
-            // Handle the click on a movie provider. Maybe show more details or navigate to another screen?
+        logo = findViewById(R.id.provider_logo)
+        name = findViewById(R.id.provider_name)
+        displayPriority = findViewById(R.id.provider_display_priority)
+
+        val provider = intent.getParcelableExtra<MovieProvider>(EXTRA_PROVIDER)
+        if (provider != null) {
+            populateDetails(provider)
+        } else {
+            finish()
         }
+    }
 
-        val recyclerView: RecyclerView = findViewById(R.id.recyclerView) // Assuming you have a RecyclerView with this ID in activity_provider_detail.xml
-        recyclerView.adapter = adapter
+    private fun populateDetails(provider: MovieProvider) {
+        Glide.with(this)
+            .load(provider.logoPath)
+            .transition(DrawableTransitionOptions.withCrossFade())
+            .into(logo)
 
-        MediaRepository.getMovieProviders(
-            onSuccess = { movieProviders ->
-                if (movieProviders.all { it is MovieProvider }) {
-                    adapter.updateData(movieProviders as List<MovieProvider>)
-                } else {
-                    // Handle the type mismatch or try to cast/convert the data to the expected type
-                }
-            },
-            onError = {
-                // Handle error, maybe show a Toast or a Snackbar
-            }
-        )
+        name.text = provider.name
+        displayPriority.text = getString(R.string.display_priority, provider.displayPriority)
     }
 }

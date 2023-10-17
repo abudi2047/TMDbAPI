@@ -1,13 +1,13 @@
 package com.example.tmdbapi
 
-import android.os.Parcel
 import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class MovieProvider(
-    val id: Int,
-    val name: String,
-    val logoPath: String,
-    val displayPriority: Int
+    @SerializedName("id") val id: Int,
+    @SerializedName("name") val name: String,
+    @SerializedName ("logoPath") val logoPath: String,
+    @SerializedName ("display_Priority") val displayPriority: Int
 ) : Parcelable

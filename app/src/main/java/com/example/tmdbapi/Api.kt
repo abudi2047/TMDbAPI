@@ -3,7 +3,6 @@ package com.example.tmdbapi
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
-
 interface Api {
 
     @GET("movie/popular")
@@ -42,10 +41,15 @@ interface Api {
         @Query("page") page: Int
     ): Call<GetTVShowsResponse>
 
-    @GET("trending/people/week")
-    fun getTrendingPeople(@Query("api_key") apiKey: String): Call<TrendingPersonResponse>
+    @GET("watch/providers/movie")
+    fun getMovieProviders(
+        @Query("api_key") apiKey: String,
+        @Query("page") page: Int
+    ): Call<GetMovieProvidersResponse>
 
-    @GET("path_to_movie_providers_endpoint")
-    fun getMovieProviders(): Call<List<MovieProvider>>
-
+    @GET("trending/person/week")
+    fun getTrendingPeople(
+        @Query("api_key") apiKey: String,
+        @Query("page") page: Int
+    ): Call<TrendingPersonResponse>
 }

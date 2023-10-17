@@ -79,31 +79,27 @@ object MediaRepository {
             .enqueue(createTVShowsCallback(onSuccess, onError))
     }
 
-    fun getMovieProviders(onSuccess: (movieProviders: List<MovieProvider>) -> Unit, onError: () -> Unit) {
-        Log.d("DEBUG_TAG", "Attempting to fetch movie providers.")
-        api.getMovieProviders().enqueue(object : Callback<List<MovieProvider>> {
-            override fun onResponse(call: Call<List<MovieProvider>>, response: Response<List<MovieProvider>>) {
-                val movieProviders = response.body()
-                if (response.isSuccessful && movieProviders != null) {
-                    // Add your type-checking logic here
-                    if (movieProviders.all { it is MovieProvider }) {
-                        onSuccess(movieProviders as List<MovieProvider>)
+    fun getMovieProviders(onSuccess: (movieProviders: List<MovieProvider>) -> Unit, onError: (error: String) -> Unit) {
+        Log.d("MediaRepository", "Attempting to fetch movie providers.")
+        api.getMovieProviders(API_KEY, 1).enqueue(object : Callback<GetMovieProvidersResponse> {
+            override fun onResponse(call: Call<GetMovieProvidersResponse>, response: Response<GetMovieProvidersResponse>) {
+                if (response.isSuccessful) {
+                    val movieProviders = response.body()?.providers
+                    if (movieProviders != null) {
+                        onSuccess(movieProviders)
                     } else {
-                        onError()
-                        Log.e("DEBUG_TAG", "MovieProviders list contains unexpected types.")
+                        onError("Response body is null")
                     }
                 } else {
-                    onError()
+                    onError("Response error ${response.code()}: ${response.errorBody()?.string()}")
                 }
             }
 
-            override fun onFailure(call: Call<List<MovieProvider>>, t: Throwable) {
-                Log.e("DEBUG_TAG", "API call failed: ${t.localizedMessage}")
-                onError()
+            override fun onFailure(call: Call<GetMovieProvidersResponse>, t: Throwable) {
+                onError("API call failed: ${t.localizedMessage}")
             }
         })
     }
-
 
     private fun createMoviesCallback(
         onSuccess: (movies: List<Movie>) -> Unit,

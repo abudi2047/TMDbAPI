@@ -6,35 +6,37 @@
     android:padding="16dp">
 
     <ImageView
-        android:id="@+id/providerLogoImageView"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="16dp" />
+        android:id="@+id/provider_logo"
+    android:layout_width="100dp"
+    android:layout_height="100dp"
+    android:layout_gravity="center_horizontal"
+    android:layout_marginBottom="16dp"
+    android:contentDescription="@string/provider_logo" />
 
     <TextView
-        android:id="@+id/nameTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:textSize="18sp" />
+        android:id="@+id/provider_name"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:textSize="18sp" />
 
     <TextView
-        android:id="@+id/displayPriorityTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:textSize="16sp" />
+        android:id="@+id/provider_display_priority"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:textSize="16sp" />
+
 
     <TextView
         android:id="@+id/providerIdTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:textSize="16sp" />
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:textSize="16sp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"/>
 </LinearLayout>

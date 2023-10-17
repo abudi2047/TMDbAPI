@@ -6,5 +6,7 @@
     <string name="upcoming">Upcoming</string>
     <string name="poster_image_description">Poster Image Description</string>
     <string name="profile_image_description">Profile Image of Person</string>
-    <string name="provider_logo_description">Logo of the Movie Provider</string>
+    <string name="display_priority">Display Priority: %d</string>
+    <string name="provider_logo">Provider Logo</string>
+    <string name="provider_logo_description">Description of the provider logo</string>
 </resources>

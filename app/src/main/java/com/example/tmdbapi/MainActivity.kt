@@ -55,12 +55,11 @@ class MainActivity : AppCompatActivity() {
         initUIComponents()
         setScrollListeners()
 
-        // Initialize the recycler view for movie providers.
         val rvMovieProviders: RecyclerView = findViewById(R.id.rv_movie_providers)
         rvMovieProviders.layoutManager = LinearLayoutManager(this)
 
         movieProvidersAdapter = MovieProvidersAdapter(ArrayList()) { movieProvider ->
-            // Handle the provider item click here, e.g.:
+            // Handle the provider item click here
             val intent = Intent(this, ProviderDetailActivity::class.java)
             intent.putExtra("PROVIDER_DETAILS", movieProvider)
             startActivity(intent)
@@ -69,9 +68,7 @@ class MainActivity : AppCompatActivity() {
 
         MediaRepository.getMovieProviders({ movieProviders ->
             movieProvidersAdapter.updateData(movieProviders)
-        }, {
-            onError() // If you want to handle errors using your onError function.
-        })
+        }, ::onError)
     }
 
 
@@ -249,15 +246,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun fetchTrendingPeople() {
-        PeopleRepository.getTrendingPeople(::onTrendingPeopleFetched, ::onError)
+        val page = 1
+        PeopleRepository.getTrendingPeople(
+            page,
+            ::onTrendingPeopleFetched,
+            ::onError
+        )
     }
 
     private fun onTrendingPeopleFetched(people: List<Person>) {
         trendingPersonAdapter.appendPeople(people)
     }
 
-    private fun onError() {
-        Toast.makeText(this, "An error occurred", Toast.LENGTH_SHORT).show()
+    private fun onError(errorMessage: String = "An error occurred") {
+        Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
     }
 
     companion object {
