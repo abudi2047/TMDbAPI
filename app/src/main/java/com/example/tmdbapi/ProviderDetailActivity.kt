@@ -4,50 +4,49 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.ImageView
-import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.example.tmdbapi.databinding.ActivityProviderDetailBinding
 
 class ProviderDetailActivity : AppCompatActivity() {
 
-    private lateinit var logo: ImageView
-    private lateinit var name: TextView
-    private lateinit var displayPriority: TextView
+    private lateinit var binding: ActivityProviderDetailBinding
+
 
     companion object {
-        private const val EXTRA_PROVIDER = "extra_provider"
+        const val EXTRA_PROVIDER_ID = "extra_provider_id"
+        const val EXTRA_PROVIDER_NAME = "extra_provider_name"
+        const val EXTRA_PROVIDER_LOGO = "extra_provider_logo"
+        const val EXTRA_PROVIDER_DISPLAY_PRIORITY = "extra_provider_display_priority"
 
-        fun newIntent(context: Context, provider: MovieProvider): Intent {
-            val intent = Intent(context, ProviderDetailActivity::class.java)
-            intent.putExtra(EXTRA_PROVIDER, provider)
-            return intent
-        }
+  // Removed this function as we are no longer using passing the entire MovieProvider object
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_provider_detail)
+        binding = ActivityProviderDetailBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        logo = findViewById(R.id.provider_logo)
-        name = findViewById(R.id.provider_name)
-        displayPriority = findViewById(R.id.provider_display_priority)
+        val providerId = intent.getIntExtra(EXTRA_PROVIDER_ID, -1)
+        val providerName = intent.getStringExtra(EXTRA_PROVIDER_NAME)
+        val providerLogo = intent.getStringExtra(EXTRA_PROVIDER_LOGO)
+        val providerDisplayPriority = intent.getIntExtra(EXTRA_PROVIDER_DISPLAY_PRIORITY, 0)
 
-        val provider = intent.getParcelableExtra<MovieProvider>(EXTRA_PROVIDER)
-        if (provider != null) {
-            populateDetails(provider)
+        if (providerId != -1 && providerName != null && providerLogo != null) {
+            populateDetails(providerId, providerName, providerLogo, providerDisplayPriority)
         } else {
             finish()
         }
     }
 
-    private fun populateDetails(provider: MovieProvider) {
+    private fun populateDetails(id: Int, name: String, logoPath: String, displayPriority: Int) {
         Glide.with(this)
-            .load(provider.logoPath)
+            .load(logoPath)
             .transition(DrawableTransitionOptions.withCrossFade())
-            .into(logo)
+            .into(binding.providerLogo)
 
-        name.text = provider.name
-        displayPriority.text = getString(R.string.display_priority, provider.displayPriority)
+        binding.providerName.text = name
+        binding.providerDisplayPriority.text = getString(R.string.display_priority, displayPriority)
     }
 }

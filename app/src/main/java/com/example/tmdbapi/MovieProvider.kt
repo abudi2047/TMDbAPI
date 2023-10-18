@@ -6,8 +6,8 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class MovieProvider(
-    @SerializedName("id") val id: Int,
-    @SerializedName("name") val name: String,
-    @SerializedName ("logoPath") val logoPath: String,
+    @SerializedName("provider_Id") val id: Int,
+    @SerializedName("provider_Name") val name: String,
+    @SerializedName ("logo_Path") val logoPath: String,
     @SerializedName ("display_Priority") val displayPriority: Int
 ) : Parcelable

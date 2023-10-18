@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
         movieProvidersAdapter = MovieProvidersAdapter(ArrayList()) { movieProvider ->
             // Handle the provider item click here
             val intent = Intent(this, ProviderDetailActivity::class.java)
-            intent.putExtra("PROVIDER_DETAILS", movieProvider)
+            intent.putExtra("extra_provider", movieProvider)
             startActivity(intent)
         }
         rvMovieProviders.adapter = movieProvidersAdapter

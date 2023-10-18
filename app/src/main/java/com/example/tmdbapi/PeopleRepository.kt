@@ -12,8 +12,7 @@ import retrofit2.Response
 
 object PeopleRepository {
     private const val BASE_URL = "https://api.themoviedb.org/3/"
-    private const val API_KEY = "YOUR_API_KEY" // Consider removing the hardcoded API key.
-
+    private const val API_KEY = "5575de1681ca7d8c20c4d05f6ffe9ffc"
     private val api: Api
 
     init {
@@ -26,9 +25,9 @@ object PeopleRepository {
     }
 
     fun getTrendingPeople(
-        page: Int = 1, // Adding pagination support.
+        page: Int = 1,
         onSuccess: (List<Person>) -> Unit,
-        onError: (String) -> Unit // Changed to provide error message.
+        onError: (String) -> Unit
     ) {
         api.getTrendingPeople(API_KEY, page).enqueue(object : Callback<TrendingPersonResponse> {
             override fun onResponse(

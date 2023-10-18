@@ -1,5 +1,6 @@
 package com.example.tmdbapi
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,14 +27,14 @@ class MovieProvidersAdapter(
     }
 
     fun updateData(newProviders: List<MovieProvider>) {
-        providers.clear() // Clear the old data
-        providers.addAll(newProviders) // Add the new providers
-        notifyDataSetChanged() // Notify the adapter that the data has changed
+        providers.clear()
+        providers.addAll(newProviders)
+        notifyDataSetChanged()
     }
 
     fun appendProviders(providers: List<MovieProvider>) {
         this.providers.addAll(providers)
-        notifyItemRangeInserted(this.providers.size - providers.size, providers.size) // Optimized for batch updates
+        notifyItemRangeInserted(this.providers.size - providers.size, providers.size)
     }
 
     class ProviderViewHolder(itemView: View, private val onProviderClick: (provider: MovieProvider) -> Unit) : RecyclerView.ViewHolder(itemView) {
@@ -41,9 +42,18 @@ class MovieProvidersAdapter(
         private val name: TextView = itemView.findViewById(R.id.item_provider_name)
 
         fun bind(provider: MovieProvider) {
-            itemView.setOnClickListener { onProviderClick(provider) }
+            itemView.setOnClickListener {
+                // Passing each individual attribute as opposed to the whole object
+                val context = itemView.context
+                val detailIntent = Intent(context, ProviderDetailActivity::class.java)
 
-            // Assuming that the logo URL is complete (including "http(s)://")
+                detailIntent.putExtra(ProviderDetailActivity.EXTRA_PROVIDER_ID, provider.id)
+                detailIntent.putExtra(ProviderDetailActivity.EXTRA_PROVIDER_NAME, provider.name)
+                detailIntent.putExtra(ProviderDetailActivity.EXTRA_PROVIDER_LOGO, provider.logoPath)
+                detailIntent.putExtra(ProviderDetailActivity.EXTRA_PROVIDER_DISPLAY_PRIORITY, provider.displayPriority)
+
+                context.startActivity(detailIntent)
+            }
             val logoUrl = provider.logoPath
 
             Glide.with(itemView)
